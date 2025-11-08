@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import userRoutes from './routes/user/user.routes.js';
 dotenv.config();
 
 const app = express();
@@ -11,6 +12,8 @@ app.use(express.urlencoded({extended: true}));
 
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI 
+
+app.use('/api/v1/users', userRoutes);
 
 const startServer = async () => {
     try{

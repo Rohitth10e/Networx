@@ -1,7 +1,7 @@
 import { hashPassword, verifyPassword } from "../../utils/bcrypt.js";
 import { generateToken, verifyToken } from '../../utils/jwt.js';
-import User from "../../models/User.js";
-import Profile from "../../models/Profile.js";
+import User from "../../models/user.model.js";
+import Profile from "../../models/profile.model.js";
 
 export const register = async (req, res) => {
     try {
@@ -15,7 +15,7 @@ export const register = async (req, res) => {
 
         const findUser = await User.findOne({ email })
 
-        if (findUser.length) {
+        if (findUser) {
             return res.status(400).json({ message: "User already exists" });
         }
 
@@ -25,7 +25,7 @@ export const register = async (req, res) => {
             email,
             password: hashedPass
         })
-        Profile.create({ user: user._id });
+        await Profile.create({ userId: user._id });
         await user.save();
 
         res.status(201).json({ message: "User registered successfully" });
@@ -34,7 +34,7 @@ export const register = async (req, res) => {
     }
 }
 
-export const Login = async (req, res) => {
+export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
         if (!email || !password) {
